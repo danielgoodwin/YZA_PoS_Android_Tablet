@@ -32,7 +32,7 @@ public class AddStaffPresenter implements AddStaffContract.Presenter {
     public void confirmStaffMember(String name, String surname, String phone, String email,
                                    String address) {
         Log.i("saveStaff", "in presenter");
-        Staff staffMember = new Staff(name, surname, phone, email, address);
+        Staff staffMember = new Staff(null, name, surname, phone, email, address);
         Log.i("saveStaff", "name is " + name);
         Log.i("saveStaff", staffMember.toString());
         mStaffRepository.saveStaff(staffMember);

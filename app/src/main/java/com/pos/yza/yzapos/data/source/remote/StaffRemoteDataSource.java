@@ -191,7 +191,7 @@ public class StaffRemoteDataSource implements StaffDataSource {
                     String email = object.getString(EMAIL);
                     String homeAddress = object.getString(ADDRESS);
 
-                    staff.add(new Staff(Integer.parseInt(staffId), firstName, lastName,
+                    staff.add(new Staff(Integer.parseInt(staffId),null, firstName, lastName,
                                         phoneNumber, email, homeAddress));
 
                     Log.d("staffRemoteRequest", firstName + " " + lastName);
