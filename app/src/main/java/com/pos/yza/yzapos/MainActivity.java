@@ -12,15 +12,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.os.StrictMode;
 
 import com.pos.yza.yzapos.adminoptions.AdminOptionsActivity;
 
 import com.pos.yza.yzapos.data.source.TransactionsRepository;
+import com.pos.yza.yzapos.data.source.local.MockServerSingleton;
 import com.pos.yza.yzapos.managetransactions.ManageTransactionsActivity;
 
 import com.pos.yza.yzapos.newtransaction.NewTransactionActivity;
 
 import java.util.Calendar;
+
+import okhttp3.mockwebserver.MockWebServer;
 
 public class MainActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
@@ -32,6 +36,18 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8)
+        {
+            Log.i(TAG, "Start MockWebServer");
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            MockServerSingleton server = MockServerSingleton.getInstance();
+
+        }
+
         mTransactionsRepository = Injection.provideTransactionsRepository(this);
         Calendar calendar = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(
@@ -39,6 +55,19 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
+    protected void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if (SDK_INT > 8)
+        {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                    .permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            //your codes here
+
+        }
     }
 
     public void newTransaction(View view){
@@ -82,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                                 String user_text = (userInput.getText()).toString();
 
                                 /** CHECK FOR USER'S INPUT **/
-                                if (user_text.equals("bulaklaksabukid"))
+                                if (user_text.equals("65849"))
                                 {
                                     Log.d(user_text, "HELLO THIS IS THE MESSAGE CAUGHT :)");
                                     startAdminOptions();

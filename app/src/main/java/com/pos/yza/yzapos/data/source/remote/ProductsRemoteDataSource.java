@@ -312,7 +312,7 @@ public class ProductsRemoteDataSource implements ProductsDataSource {
                         properties.add(productProperty);
                     }
 
-                    Product product = new Product(id, unitPrice, unitOfMeasure, category, properties);
+                    Product product = new Product(id,name, unitPrice, unitOfMeasure, category, properties);
                     Log.d("productResponse", product.toString());
 
                     products.add(product);

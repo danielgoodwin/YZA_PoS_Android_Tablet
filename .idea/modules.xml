@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/YZA_PoS_Android_Tablet.iml" filepath="$PROJECT_DIR$/YZA_PoS_Android_Tablet.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/yza-fork.iml" filepath="$PROJECT_DIR$/yza-fork.iml" />
     </modules>
   </component>
 </project>

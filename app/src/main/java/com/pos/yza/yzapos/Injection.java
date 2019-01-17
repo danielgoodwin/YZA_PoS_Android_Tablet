@@ -8,7 +8,9 @@ import com.pos.yza.yzapos.data.source.PaymentsRepository;
 import com.pos.yza.yzapos.data.source.ProductsRepository;
 import com.pos.yza.yzapos.data.source.StaffRepository;
 import com.pos.yza.yzapos.data.source.TransactionsRepository;
+import com.pos.yza.yzapos.data.source.local.ProductsLocalDataSource;
 import com.pos.yza.yzapos.data.source.remote.CategoriesRemoteDataSource;
+import com.pos.yza.yzapos.data.source.local.CategoriesLocalDataSource;
 import com.pos.yza.yzapos.data.source.remote.PaymentsRemoteDataSource;
 import com.pos.yza.yzapos.data.source.remote.ProductsRemoteDataSource;
 import com.pos.yza.yzapos.data.source.remote.StaffRemoteDataSource;
@@ -24,12 +26,14 @@ public class Injection {
 
     public static ProductsRepository provideProductsRepository(@NonNull Context context) {
         checkNotNull(context);
-        return ProductsRepository.getInstance(ProductsRemoteDataSource.getInstance(context));
+        return ProductsRepository.getInstance(ProductsLocalDataSource.getInstance(context));
+        //return ProductsRepository.getInstance(ProductsRemoteDataSource.getInstance(context));
     }
 
     public static CategoriesRepository provideCategoriesRepository(@NonNull Context context) {
         checkNotNull(context);
-        return CategoriesRepository.getInstance(CategoriesRemoteDataSource.getInstance(context));
+        return CategoriesRepository.getInstance(CategoriesLocalDataSource.getInstance(context));
+        //return CategoriesRepository.getInstance(CategoriesRemoteDataSource.getInstance(context));
     }
 
     public static StaffRepository provideStaffRepository(@NonNull Context context) {

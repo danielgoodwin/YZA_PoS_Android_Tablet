@@ -42,6 +42,21 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Product Name"
+            style="@style/FormLabel"
+            />
+        <EditText
+            android:id="@+id/product_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            style="@style/FormAnswer"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/unit_of_measure"
             style="@style/FormLabel"
             />
@@ -52,7 +67,7 @@
             android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
-            android:hint="book/page/etc"
+            android:hint="ea"
             style="@style/FormAnswer"/>
 
         <TextView

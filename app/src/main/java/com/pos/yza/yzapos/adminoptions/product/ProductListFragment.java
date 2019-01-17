@@ -260,7 +260,7 @@ public class ProductListFragment extends Fragment implements ProductListContract
     @Override
     public ProductCategory getChosenProductCategory() {
         if (mSpinnerAdapter.getCount() > 0){
-            return mSpinnerAdapter.getItem(1);
+            return mSpinnerAdapter.getItem(0);
         }
         return null;
     }

@@ -79,19 +79,21 @@ public class AddProductFragment extends DialogFragment implements AddProductCont
                 Log.i("category_spinner", currentCategory.getName());
                 propertyLayout.removeAllViews();
                 propertyAnswers.clear();
-                for (CategoryProperty property : currentCategory.getPropertyList()) {
-                    TextView label_property = new TextView(getContext());
-                    label_property.setTextAppearance(getContext(), R.style.FormLabel);
-                    label_property.setPadding(0, 12, 0, 0);
-                    label_property.setText(Formatters.capitalise(property.getName()));
+                if (currentCategory.getPropertyList() != null) {
+                    for (CategoryProperty property : currentCategory.getPropertyList()) {
+                        TextView label_property = new TextView(getContext());
+                        label_property.setTextAppearance(getContext(), R.style.FormLabel);
+                        label_property.setPadding(0, 12, 0, 0);
+                        label_property.setText(Formatters.capitalise(property.getName()));
 
-                    EditText editText_property = (EditText) View.inflate(getContext(), R.layout.edittext_one_line_done, null);
-                    editText_property.setId(property.getId());
+                        EditText editText_property = (EditText) View.inflate(getContext(), R.layout.edittext_one_line_done, null);
+                        editText_property.setId(property.getId());
 
-                    propertyLayout.addView(label_property);
-                    propertyLayout.addView(editText_property);
-                    propertyAnswers.add(editText_property);
-                    Log.i("category_spinner", "added " + property.getName());
+                        propertyLayout.addView(label_property);
+                        propertyLayout.addView(editText_property);
+                        propertyAnswers.add(editText_property);
+                        Log.i("category_spinner", "added " + property.getName());
+                    }
                 }
             }
 
@@ -101,6 +103,7 @@ public class AddProductFragment extends DialogFragment implements AddProductCont
             }
         });
 
+        final EditText productName = root.findViewById(R.id.product_name);
         final EditText unitOfMeasure = root.findViewById(R.id.unit_of_measure);
         final EditText unitPrice = root.findViewById(R.id.unit_price);
 
@@ -108,7 +111,8 @@ public class AddProductFragment extends DialogFragment implements AddProductCont
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mPresenter.confirmProduct(currentCategory, unitOfMeasure.getText().toString(),
+                mPresenter.confirmProduct(currentCategory,productName.getText().toString(),
+                        unitOfMeasure.getText().toString(),
                         unitPrice.getText().toString());
             }
         });

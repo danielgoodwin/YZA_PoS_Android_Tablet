@@ -41,11 +41,11 @@ public class AddProductPresenter implements AddProductContract.Presenter {
     }
 
     @Override
-    public void confirmProduct(ProductCategory category, String unitOfMeasure, String unitPrice) {
+    public void confirmProduct(ProductCategory category,String name, String unitOfMeasure, String unitPrice) {
         Log.i("saveItem", "in presenter");
         Double newUnitPrice = Double.parseDouble(unitPrice);
         ArrayList<ProductProperty> properties = getFormProperties();
-        Product product = new Product(newUnitPrice, unitOfMeasure, category, properties);
+        Product product = new Product(name,newUnitPrice, unitOfMeasure, category, properties);
         mProductsRepository.saveProduct(product);
         mAddProductView.showFeedback();
     }

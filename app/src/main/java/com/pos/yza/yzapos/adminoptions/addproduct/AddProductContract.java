@@ -23,6 +23,7 @@ public interface AddProductContract {
     }
 
     interface Presenter extends BasePresenter {
-        void confirmProduct(ProductCategory category, String unitOfMeasure, String unitPrice);
+        void confirmProduct(ProductCategory category, String name,
+                            String unitOfMeasure, String unitPrice);
     }
 }
