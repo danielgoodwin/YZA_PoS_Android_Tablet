@@ -123,7 +123,7 @@ public class ManageTransactionsFragment extends Fragment implements ManageTransa
             int transIDSearch = Integer.parseInt(transIDSearchView.getText().toString());
             mPresenter.searchTransactionById(transIDSearch);
         } catch (NumberFormatException e) {
-            e.printStackTrace();
+            mPresenter.searchAllTransactions();
         }
     }
 

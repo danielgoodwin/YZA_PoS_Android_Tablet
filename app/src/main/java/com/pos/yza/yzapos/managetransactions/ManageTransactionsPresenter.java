@@ -8,6 +8,7 @@ import com.pos.yza.yzapos.data.source.PaymentsRepository;
 import com.pos.yza.yzapos.data.source.TransactionsDataSource;
 import com.pos.yza.yzapos.data.source.TransactionsRepository;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +77,21 @@ public class ManageTransactionsPresenter implements ManageTransactionsContract.P
                 ArrayList<Transaction> transactions = new ArrayList<>();
                 transactions.add(transaction);
                 mManageTransactionsView.setTransactions(transactions);
+            }
+            @Override
+            public void onDataNotAvailable() {
+                mManageTransactionsView.showSnackBar("Transaction ID not found");
+            }
+        });
+    }
+
+    @Override
+    public void searchAllTransactions() {
+        Log.i(TAG, "search all transactions ");
+        mTransactionsRepository.getTransactions( new TransactionsDataSource.LoadTransactionsCallback() {
+            @Override
+            public void onTransactionsLoaded(List<Transaction> list) {
+                mManageTransactionsView.setTransactions(list);
             }
             @Override
             public void onDataNotAvailable() {

@@ -26,5 +26,6 @@ public interface ManageTransactionsContract {
         void refundTransaction(String transactionId);
         void addPaymentToTransaction();
         void searchTransactionById(int id);
+        void searchAllTransactions();
     }
 }

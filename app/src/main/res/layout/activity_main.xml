@@ -5,36 +5,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.pos.yza.yzapos.MainActivity">
+
     <LinearLayout
         android:id="@+id/buttons_layout"
-        android:baselineAligned="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="176dp"
+        android:baselineAligned="false"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintBottom_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="parent">
 
         <Button
             android:id="@+id/new_transaction"
             style="@style/MainActivityPrimaryButtons"
-            android:text="@string/new_transaction"
             android:drawableTop="@drawable/ic_create_transaction"
-            android:onClick="newTransaction"/>
+            android:onClick="newTransaction"
+            android:text="@string/new_transaction" />
 
         <Button
             android:id="@+id/view_transaction"
             style="@style/MainActivityPrimaryButtons"
-            android:text="@string/manage_transactions"
             android:drawableTop="@drawable/ic_manage_transactions"
-            android:onClick="manageTransactions"/>
+            android:onClick="manageTransactions"
+            android:text="@string/manage_transactions" />
 
         <Button
             android:id="@+id/admin"
             style="@style/MainActivityPrimaryButtons"
-            android:text="@string/admin_options"
             android:drawableTop="@drawable/ic_admin2"
-            android:onClick="admin"/>
+            android:onClick="admin"
+            android:text="@string/admin_options" />
 
     </LinearLayout>
 
@@ -45,5 +47,6 @@
         app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintRight_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttons_layout"
-        android:onClick="generateReport"/>
+        android:onClick="generateReport"
+        android:visibility="gone"/>
 </android.support.constraint.ConstraintLayout>

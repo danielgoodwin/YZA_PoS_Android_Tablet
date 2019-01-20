@@ -77,7 +77,19 @@ public class ProductsRepository implements ProductsDataSource{
 
     @Override
     public void getProduct(@NonNull String productId, @NonNull GetProductCallback callback) {
+        checkNotNull(callback);
 
+        mProductsRemoteDataSource.getProduct(productId, new GetProductCallback() {
+            @Override
+            public void onProductLoaded(Product product) {
+                callback.onProductLoaded(product);
+            }
+
+            @Override
+            public void onDataNotAvailable() {
+                callback.onDataNotAvailable();
+            }
+        });
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.pos.yza.yzapos.newtransaction;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -18,7 +19,14 @@ import com.android.volley.Response;
 import com.pos.yza.yzapos.Injection;
 import com.pos.yza.yzapos.R;
 import com.pos.yza.yzapos.data.representations.LineItem;
+import com.pos.yza.yzapos.data.representations.Payment;
+import com.pos.yza.yzapos.data.representations.Product;
 import com.pos.yza.yzapos.data.representations.ProductCategory;
+import com.pos.yza.yzapos.data.representations.Transaction;
+import com.pos.yza.yzapos.data.source.PaymentsRepository;
+import com.pos.yza.yzapos.data.source.ProductsDataSource;
+import com.pos.yza.yzapos.data.source.ProductsRepository;
+import com.pos.yza.yzapos.data.source.TransactionsDataSource;
 import com.pos.yza.yzapos.data.source.TransactionsRepository;
 import com.pos.yza.yzapos.newtransaction.cart.CartFragment;
 import com.pos.yza.yzapos.newtransaction.cart.CartActions;
@@ -36,7 +44,11 @@ import com.pos.yza.yzapos.util.ActivityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.HashMap;
+
+import lib.printer.thermal.Printer;
+import lib.printer.thermal.bluetooth.BluetoothPrinters;
 
 public class NewTransactionActivity extends AppCompatActivity
         implements OnFragmentInteractionListener{
@@ -55,6 +67,8 @@ public class NewTransactionActivity extends AppCompatActivity
 
     private NewTransaction transaction = new NewTransaction();
     private TransactionsRepository mTransactionsRepository;
+    private ProductsRepository mProductRepository;
+    private PaymentsRepository mPaymentRepository;
 
     private View parentLayout;
 
@@ -88,6 +102,8 @@ public class NewTransactionActivity extends AppCompatActivity
         mCartPresenter = new CartPresenter(cartFragment);
         // Initialise the repo
         mTransactionsRepository = Injection.provideTransactionsRepository(this);
+        mProductRepository = Injection.provideProductsRepository(this);
+        mPaymentRepository = Injection.providePaymentsRepository(this);
 
     }
 
@@ -220,10 +236,24 @@ public class NewTransactionActivity extends AppCompatActivity
                         Log.i("saveTransaction", response.toString());
                         Snackbar mySnackbar;
                         try {
+                            AsyncTask.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        printReceipt(response.getInt("transaction_id"));
+                                    } catch (Exception ex)
+                                    {
+                                        //
+                                        Log.w("PRINT", "Error printing receipt " + ex.getMessage());
+                                    }
+                                }
+                            });
+
                             mySnackbar = Snackbar.make(parentLayout,
                                     getString(R.string.transaction_created) + " #"
                                             + response.getInt("transaction_id"),
                                     Snackbar.LENGTH_LONG);
+
                         }
                         catch (JSONException e) {
                             mySnackbar = Snackbar.make(parentLayout,
@@ -232,15 +262,116 @@ public class NewTransactionActivity extends AppCompatActivity
                             e.printStackTrace();
                         }
                         mySnackbar.show();
-                        int finishTime = 2;
+                        int finishTime = 1;
                         Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             public void run() {
                                 finish();
                             }
                         }, finishTime * 1000);
+
+
+
                     }
                 });
+        //printReceipt(-1);
+
+
+    }
+
+    private void printReceipt(int transid)
+    {
+        try {
+
+            mTransactionsRepository.getTransactionById(String.valueOf(transid),
+                            new TransactionsDataSource.GetTransactionCallback(){
+                @Override
+                public void onTransactionLoaded(Transaction transaction) {
+                    Printer printer = new Printer(BluetoothPrinters.selectFirstPairedBluetoothPrinter(),
+                            203, 48f, 32);
+
+                    StringBuffer receiptText = new StringBuffer();
+                    receiptText.append( "[C]<font size='big'>ORDER " + transaction.getTransactionId() + "</font>\n");
+                    receiptText.append("[L]\n");
+                    receiptText.append("[C]================================\n" );
+
+
+                    for (int idx =0; idx < transaction.getLineItems().size(); idx++)
+                    {
+                        LineItem item = transaction.getLineItems().get(idx);
+
+                        mProductRepository.getProduct(String.valueOf(item.getProductId()),
+                                            new ProductsDataSource.GetProductCallback() {
+                            @Override
+                            public void onProductLoaded(Product product) {
+                                receiptText.append("[L]" + product.getName() + " [R]" + item.getAmount() + "\n");
+                            }
+
+                            @Override
+                            public void onDataNotAvailable() {
+                                Log.e("GETPRODUCT", "Product id not found " + item.getProductId());
+                            }
+                        });
+                    }
+
+                    receiptText.append("[L]\n");
+                    receiptText.append("[L]\n");
+                    receiptText.append("[C]================================\n" );
+
+                    if (transaction.getAmount() > 0) {
+                        receiptText.append("[L]Total [R]" + transaction.getAmount() + "\n");
+                    }
+
+                    receiptText.append("[L]\n");
+                    receiptText.append("[L]\n");
+                    receiptText.append("[C]================================\n" );
+
+                    if (transaction.getPayments().size() > 0) {
+                        for (int idx = 0; idx < transaction.getPayments().size(); idx++) {
+                            Payment item = transaction.getPayments().get(idx);
+
+                            receiptText.append("[L]Paid [R]" + item.getAmount() + "\n");
+                        }
+
+                        receiptText.append("[L]\n");
+                        receiptText.append("[L]\n");
+                        receiptText.append("[C]================================\n");
+
+                        receiptText.append("[L]Balance [R]" + transaction.getBalance() + "\n");
+                        receiptText.append("[L]\n");
+                        receiptText.append("[L]\n");
+                        receiptText.append("[C]================================\n");
+                    }
+
+                    //receiptText.append("[C]<barcode type='ean13' height='10'>" + transaction.getTransactionId() + "</barcode>\n");
+                    printer.printFormattedText(receiptText.toString());
+
+                    //
+                    // Feed before cut
+                    for (int bidx =0; bidx< 100; bidx++)
+                    {
+                        receiptText.append("[L]\n");
+                    }
+
+                    printer.cutPaper();
+
+                    printer.disconnectPrinter();
+
+                }
+
+                @Override
+                public void onDataNotAvailable() {
+                    Log.e("NEWTRANS", "Transaction not found");
+                }
+            });
+
+
+
+
+        } catch (Exception ex)
+        {
+            Log.e("RECEIPT", "Error in receipt print " + ex.getMessage());
+        }
 
     }
 

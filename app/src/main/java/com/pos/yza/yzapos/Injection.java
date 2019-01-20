@@ -8,8 +8,10 @@ import com.pos.yza.yzapos.data.source.PaymentsRepository;
 import com.pos.yza.yzapos.data.source.ProductsRepository;
 import com.pos.yza.yzapos.data.source.StaffRepository;
 import com.pos.yza.yzapos.data.source.TransactionsRepository;
+import com.pos.yza.yzapos.data.source.local.PaymentsLocalDataSource;
 import com.pos.yza.yzapos.data.source.local.ProductsLocalDataSource;
 import com.pos.yza.yzapos.data.source.local.StaffLocalDataSource;
+import com.pos.yza.yzapos.data.source.local.TransactionsLocalDataSource;
 import com.pos.yza.yzapos.data.source.remote.CategoriesRemoteDataSource;
 import com.pos.yza.yzapos.data.source.local.CategoriesLocalDataSource;
 import com.pos.yza.yzapos.data.source.remote.PaymentsRemoteDataSource;
@@ -45,12 +47,14 @@ public class Injection {
 
     public static TransactionsRepository provideTransactionsRepository(@NonNull Context context) {
         checkNotNull(context);
-        return TransactionsRepository.getInstance(TransactionsRemoteDataSource.getInstance(context));
+        //return TransactionsRepository.getInstance(TransactionsRemoteDataSource.getInstance(context));
+        return TransactionsRepository.getInstance(TransactionsLocalDataSource.getInstance(context));
     }
 
     public static PaymentsRepository providePaymentsRepository(@NonNull Context context) {
         checkNotNull(context);
-        return PaymentsRepository.getInstance(PaymentsRemoteDataSource.getInstance(context));
+        //return PaymentsRepository.getInstance(PaymentsRemoteDataSource.getInstance(context));
+        return PaymentsRepository.getInstance(PaymentsLocalDataSource.getInstance(context));
     }
 
 }

@@ -37,17 +37,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if (SDK_INT > 8)
-        {
-            Log.i(TAG, "Start MockWebServer");
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            MockServerSingleton server = MockServerSingleton.getInstance();
-
-        }
-
         mTransactionsRepository = Injection.provideTransactionsRepository(this);
         Calendar calendar = Calendar.getInstance();
         datePickerDialog = new DatePickerDialog(
@@ -55,19 +44,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
-    }
-
-    protected void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        int SDK_INT = android.os.Build.VERSION.SDK_INT;
-        if (SDK_INT > 8)
-        {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
-                    .permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-            //your codes here
-
-        }
     }
 
     public void newTransaction(View view){

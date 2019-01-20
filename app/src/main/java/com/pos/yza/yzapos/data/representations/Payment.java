@@ -22,32 +22,55 @@ public class Payment {
     private Transaction transaction;
     private State state;
 
+    public static final String LCL_TABLE_NAME = "transactionpayment";
+
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_TIMESTAMP = "paymenttimestamp";
+    public static final String COLUMN_STATUS = "status";
+    public static final String COLUMN_TRANSACTIONID = "transactionid";
+    public static final String COLUMN_AMOUNT = "amount";
+
+    // Create table SQL query
+    public static final String LCL_CREATE_TABLE =
+            "CREATE TABLE " + LCL_TABLE_NAME + "("
+                    + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                    + COLUMN_TIMESTAMP + " TIMESTAMP, "
+                    + COLUMN_STATUS + " TEXT, "
+                    + COLUMN_TRANSACTIONID + " INTEGER, "
+                    + COLUMN_AMOUNT + " NUMERIC(10,2) "
+                    + ")";
+
+    public Payment()
+    {
+
+    }
+
     public Payment(double amount, int branchId, Transaction transaction) {
-        this.paymentId = -1;
-        this.dateTime = new Date(0,0,0);
-        this.amount = amount;
-        this.branchId = branchId;
-        this.transaction = transaction;
-        this.state = State.OK;
+        this.setPaymentId(-1);
+        this.setDateTime(new Date(0,0,0));
+        this.setAmount(amount);
+        this.setBranchId(branchId);
+        this.setTransaction(transaction);
+        this.setState(State.OK);
     }
 
 
     public Payment(Date dateTime, double amount, int branchId, Transaction transaction) {
-        this.paymentId = -1;
-        this.dateTime = dateTime;
-        this.amount = amount;
-        this.branchId = branchId;
-        this.transaction = transaction;
-        this.state = State.OK;
+        this.setPaymentId(-1);
+        this.setDateTime(dateTime);
+        this.setAmount(amount);
+        this.setBranchId(branchId);
+        this.setTransaction(transaction);
+        this.setState(State.OK);
     }
 
     public Payment(int paymentId, Date dateTime, double amount, int branchId, Transaction transaction, State state) {
-        this.paymentId = paymentId;
-        this.dateTime = dateTime;
-        this.amount = amount;
-        this.branchId = branchId;
-        this.transaction = transaction;
-        this.state = state;
+        this.setPaymentId(paymentId);
+        this.setDateTime(dateTime);
+        this.setAmount(amount);
+        this.setBranchId(branchId);
+        this.setTransaction(transaction);
+        this.setState(state);
     }
 
     public static State getState(String state){
@@ -109,15 +132,15 @@ public class Payment {
     }
 
     public String toString(){
-        return "Id: " + paymentId + " Amount: " + amount + " Branch: " + branchId;
+        return "Id: " + getPaymentId() + " Amount: " + getAmount() + " Branch: " + getBranchId();
     }
 
     public HashMap<String,String> toHashMap(){
         HashMap<String, String> toReturn = new HashMap<>();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ssZ");
-        toReturn.put(TransactionsRemoteDataSource.PAYMENT_DATE_TIME, df.format(dateTime));
-        toReturn.put(TransactionsRemoteDataSource.PAYMENT_AMOUNT, amount + "");
-        toReturn.put(TransactionsRemoteDataSource.PAYMENT_BRANCH_ID, branchId + "");
+        toReturn.put(TransactionsRemoteDataSource.PAYMENT_DATE_TIME, df.format(getDateTime()));
+        toReturn.put(TransactionsRemoteDataSource.PAYMENT_AMOUNT, getAmount() + "");
+        toReturn.put(TransactionsRemoteDataSource.PAYMENT_BRANCH_ID, getBranchId() + "");
 
         // default doesnt include state; assumes state is OK for this function
 

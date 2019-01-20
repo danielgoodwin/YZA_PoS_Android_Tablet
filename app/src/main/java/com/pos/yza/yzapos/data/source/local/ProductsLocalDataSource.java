@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
+import com.pos.yza.yzapos.data.representations.Payment;
 import com.pos.yza.yzapos.data.representations.Product;
 import com.pos.yza.yzapos.data.representations.ProductCategory;
 import com.pos.yza.yzapos.data.representations.ProductProperty;
@@ -26,11 +27,6 @@ public class ProductsLocalDataSource implements ProductsDataSource {
     private static ProductsLocalDataSource INSTANCE;
     private static final String TAG = "LocalDataSource";
 
-    public final static String CATEGORY_NAME = "name",
-                               CATEGORY_PROPERTIES = "properties",
-                               CATEGORY_PROPERTY_NAME = "name";
-
-    private RequestQueue mRequestQueue;
     private LocalDatabaseHelper mDB;
 
     public static ProductsLocalDataSource getInstance(Context context) {
@@ -56,7 +52,15 @@ public class ProductsLocalDataSource implements ProductsDataSource {
 
     @Override
     public void getProduct(@NonNull String productId, @NonNull GetProductCallback callback) {
-
+        checkNotNull(callback);
+        Product obj = mDB.getProduct(Long.valueOf(productId));
+        if (obj == null)
+        {
+            callback.onDataNotAvailable();
+        }
+        else {
+            callback.onProductLoaded(obj);
+        }
     }
 
     @Override
